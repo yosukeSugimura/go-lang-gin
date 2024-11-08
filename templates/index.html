@@ -1,0 +1,67 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お名前判断</title>
+    <style>
+        /* 結果表示用のスタイル */
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            max-width: 400px;
+        }
+        .result-item {
+            margin-bottom: 5px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>お名前判定</h1>
+    <p>名前の画数や五格の情報を調べましょう！</p>
+    <form id="nameForm">
+        <label for="sei">姓: </label>
+        <input type="text" id="sei" name="sei" required>
+        <label for="name">名: </label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">検索</button>
+    </form>
+
+    <!-- 結果表示エリア -->
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('nameForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const sei = document.getElementById('sei').value;
+
+            // APIリクエストを送信
+            const response = await fetch(`/seimei/${name}/${sei}/grids`);
+            const data = await response.json();
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';  // 前の結果をクリア
+
+            // 結果の表示
+            if (data.error) {
+                resultDiv.innerHTML = `<p class="error">エラー: ${data.error}</p>`;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="result-item"><strong>天格</strong>: ${data.tenkaku}</div>
+                    <div class="result-item"><strong>人格</strong>: ${data.jinkaku}</div>
+                    <div class="result-item"><strong>地格</strong>: ${data.chikaku}</div>
+                    <div class="result-item"><strong>外格</strong>: ${data.gaikaku}</div>
+                    <div class="result-item"><strong>総格</strong>: ${data.sokaku}</div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
