@@ -2,7 +2,8 @@
 package main
 
 import (
-	"gin_docker/service" // 正しいパスに置き換えてください
+	"gin_docker/internal/config"
+	"gin_docker/internal/service" // 正しいパスに置き換えてください
 	"log"
 	"net/http"
 
@@ -10,6 +11,8 @@ import (
 )
 
 func main() {
+	config.LoadEnv()
+
 	router := gin.Default()
 
 	// テンプレートディレクトリを設定
@@ -71,5 +74,8 @@ func main() {
 	})
 
 	// サーバー起動
-	router.Run(":8080")
+	port := config.GetEnv("PORT", "8080")
+
+	// サーバー起動
+	router.Run(":" + port)
 }

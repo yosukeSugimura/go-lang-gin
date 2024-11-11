@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"gin_docker/service"
+	"gin_docker/internal/service"
 	"net/http"
 	"net/http/httptest"
 	"testing"
